@@ -52,7 +52,6 @@ create_schema() {
   echo "Creating schema $schema_name with authorization for $schema_user in database $database_name as user $database_user"
   export PGPASSWORD=$database_pass;
   psql -h $POSTGRES_HOSTNAME -v ON_ERROR_STOP=1 --username "$database_user" --dbname "$database_name" -c "CREATE SCHEMA IF NOT EXISTS $schema_name AUTHORIZATION $schema_user;"
-  #psql -Atx postgresql://$POSTGRES_USER@$POSTGRES_HOSTNAME:5432/$CRP_DATABASE -c "CREATE SCHEMA IF NOT EXISTS $schema_name AUTHORIZATION $schema_user;"
   echo "Created schema $schema_name with authorization for $schema_user. \n"
 }
 
@@ -87,11 +86,6 @@ assign_all_privileges "$CRP_DATABASE" "$CONF_USER"
 create_schema "$CRP_DATABASE" "$ADAPTER_USER" "$ADAPTER_PASS" "$CRP_ADAPTER_SCHEMA" "$ADAPTER_USER"
 create_schema "$CRP_DATABASE" "$CONF_USER" "$CONF_PASS" "$CRP_CONF_SCHEMA" "$CONF_USER"
 
-#crpSchemasToCreate=$(echo "$CRP_ADAPTER_SCHEMA" | tr ',' '\n')
-#for schemaName in $crpSchemasToCreate
-#do
-#  create_schema "$CRP_DATABASE" "$ADAPTER_USER" "$ADAPTER_PASS" "$schemaName" "$schemaName"
-#done
 echo "----------CRP Database Setup Complete---------- \n"
 
 echo "----------Database Setup Complete---------- \n"
