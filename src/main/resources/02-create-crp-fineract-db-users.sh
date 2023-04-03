@@ -48,7 +48,7 @@ check_and_create_userrole() {
 grant_privilege() {
   local username=$1
   local privilege=$2
-  echo "Granting $privilege privilege on public to $username."
+  echo "Granting $privilege privilege to $username."
   export PGPASSWORD=$POSTGRES_PASSWORD;
   ## pg_read_all_data was added in postgres 14
   psql -h $POSTGRES_HOSTNAME -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" -c "GRANT $privilege TO $username;"

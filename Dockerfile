@@ -32,9 +32,11 @@ ENV CONF_APP_PASS crpfnrctconfapp
 ENV CRP_CONF_SCHEMA crpfnrctconf
 
 # Users
-ENV FINERACT_DATABASE_USERS first,another
+ENV FINERACT_DATABASE_USERS first,another,firstwrite,anotherwrite
 ENV FINERACT_DATABASE_USER_FIRST_PASSWORD first_pass
 ENV FINERACT_DATABASE_USER_ANOTHER_PASSWORD another_pass
+ENV FINERACT_DATABASE_USER_FIRSTWRITE_PASSWORD=first_write_pass
+ENV FINERACT_DATABASE_USER_ANOTHERWRITE_PASSWORD=another_write_pass
 
 COPY src/main/resources/*.sh /scripts/
 RUN chmod +x /scripts/*.sh
