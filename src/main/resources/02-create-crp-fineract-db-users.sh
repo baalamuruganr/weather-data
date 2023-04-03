@@ -27,7 +27,7 @@ check_and_create_userroles() {
     assign_privilege $user "pg_read_all_data"
   done
 
-  check_and_assign_write_privilege
+  check_and_grant_write_privilege
 }
 
 check_and_create_userrole() {
