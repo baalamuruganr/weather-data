@@ -31,7 +31,13 @@ ENV CONF_APP_USER crpfnrctconfapp
 ENV CONF_APP_PASS crpfnrctconfapp
 ENV CRP_CONF_SCHEMA crpfnrctconf
 
-COPY src/main/resources/01-init-crp-fineract-db.sh /
-RUN chmod +x /01-init-crp-fineract-db.sh
+# Users
+ENV FINERACT_DATABASE_USERS first,another
+ENV FINERACT_DATABASE_USER_FIRST_PASSWORD first_pass
+ENV FINERACT_DATABASE_USER_ANOTHER_PASSWORD another_pass
 
-ENTRYPOINT ["/bin/sh", "/01-init-crp-fineract-db.sh"]
+COPY src/main/resources/*.sh /scripts/
+RUN chmod +x /scripts/*.sh
+
+# TODO Update the entrypoint/command to run all the scripts in directory in order
+ENTRYPOINT ["/bin/sh", "-c", "/scripts/01-init-crp-fineract-db.sh && /scripts/02-create-crp-fineract-db-users.sh"]
