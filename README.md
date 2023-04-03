@@ -23,7 +23,7 @@ How to Run:
 
 Start database
 ```
-docker run -itd -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=password postgres:13.7
+docker run -itd -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=password postgres:14.6
 ```
 
 Execute database init docker image

@@ -22,18 +22,12 @@ check_and_create_userroles() {
       exit 1;
     fi
 
-    local privileges_property="FINERACT_DATABASE_USER"${username_uppercase}"_PRIVILEGES"
-    local privileges=${!privileges_property}
-
-    if [ -z $privileges ]; then
-      echo "Privileges not found for user $user"
-      exit 1;
-    fi
-
     check_and_create_userrole $user $password
-    assign_privileges $user $privileges
+    # give users read privilege by default
+    assign_privilege $user "pg_read_all_data"
   done
 
+  check_and_assign_write_privilege
 }
 
 check_and_create_userrole() {
@@ -51,9 +45,20 @@ check_and_create_userrole() {
     fi
 }
 
-assign_privileges() {
-    local username=$1
-    local privileges=$2
+grant_privilege() {
+  local username=$1
+  local privilege=$2
+  echo "Granting $privilege privilege on public to $username."
+  export PGPASSWORD=$POSTGRES_PASSWORD;
+  ## pg_read_all_data was added in postgres 14
+  psql -h $POSTGRES_HOSTNAME -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" -c "GRANT $privilege TO $username;"
+}
+
+check_and_grant_write_privilege() {
+  for user in $(echo "$FINERACT_DATABASE_WRITE_USERS" | tr ',' '\n')
+  do
+    grant_privilege $user "pg_write_all_data"
+  done
 }
 
 #Create DB users
