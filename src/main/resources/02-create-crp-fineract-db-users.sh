@@ -24,7 +24,7 @@ check_and_create_userroles() {
 
     check_and_create_userrole $user $password
     # give users read privilege by default
-    assign_privilege $user "pg_read_all_data"
+    grant_privilege $user "pg_read_all_data"
   done
 
   check_and_grant_write_privilege
