@@ -25,7 +25,8 @@ check_and_create_userroles() {
 
     check_and_create_userrole $user $password
     # give users read privilege by default
-    grant_privilege $user "pg_read_all_data"
+    # pg_read_all_data was added in postgres 14
+    grant_role $user "pg_read_all_data"
   done
 
 }
@@ -45,26 +46,38 @@ check_and_create_userrole() {
     fi
 }
 
-grant_privilege() {
+grant_role() {
   local username=$1
-  local privilege=$2
-  echo "Granting $privilege privilege to $username."
+  local role=$2
+  echo "Granting $role role to $username."
   export PGPASSWORD=$POSTGRES_PASSWORD;
-  ## pg_read_all_data was added in postgres 14
-  psql -h $POSTGRES_HOSTNAME -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" -c "GRANT $privilege TO $username;"
+  psql -h $POSTGRES_HOSTNAME -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" -c "GRANT $role TO $username;"
 }
 
-check_and_grant_write_privilege() {
+grant_all_privileges() {
+  local database_name="$1"
+  local database_user="$2"
+  echo "Granting all privileges on $database_name to $database_user."
+  export PGPASSWORD=$POSTGRES_PASSWORD;
+  psql -h $POSTGRES_HOSTNAME -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" -c "GRANT ALL PRIVILEGES ON DATABASE $database_name TO $database_user;"
+  echo "Privileges granted on $database_name to $database_user. \n"
+}
+
+get_write_users_and_grant_all_privileges() {
   for user in $(echo "$FINERACT_DATABASE_WRITE_USERS" | tr ',' '\n')
   do
-    grant_privilege $user "pg_write_all_data"
-    grant_privilege $user "pg_stat_scan_tables"
+    fineractDBs=$(echo "$FINERACT_DATABASES" | tr ',' '\n')
+    for dbName in $fineractDBs
+    do
+      grant_all_privileges $dbName $user
+    done
+      grant_all_privileges $CRP_DATABASE $user
   done
 }
 
 #Create DB users
 check_and_create_userroles
 #Grant write access to specific DB users
-check_and_grant_write_privilege
+get_write_users_and_grant_all_privileges
 
 echo "----------Database Setup Complete (02-create-crp-fineract-db-users) ----------"
