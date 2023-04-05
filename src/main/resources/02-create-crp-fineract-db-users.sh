@@ -1,9 +1,10 @@
 #!/bin/bash
 # Created database users. The usernames must be comma separated list set as environment variable FINERACT_DATABASE_USERS.
 # The passwords for all these users should be provided as environment variables, for example, FINERACT_DATABASE_USER_<username-in-upper-case>_PASSWORD.
+# Users created by default will have read access, for write access the users should also be included in FINERACT_DATABASE_WRITE_USERS
 set -e
 
-echo "----------Begin Database Setup----------"
+echo "----------Begin Database Setup (02-create-crp-fineract-db-users) ----------"
 
 check_and_create_userroles() {
   if [ -z $FINERACT_DATABASE_USERS ]; then
@@ -27,7 +28,6 @@ check_and_create_userroles() {
     grant_privilege $user "pg_read_all_data"
   done
 
-  check_and_grant_write_privilege
 }
 
 check_and_create_userrole() {
@@ -63,5 +63,7 @@ check_and_grant_write_privilege() {
 
 #Create DB users
 check_and_create_userroles
+#Grant write access to specific DB users
+check_and_grant_write_privilege
 
-echo "----------Database Setup Complete----------"
+echo "----------Database Setup Complete (02-create-crp-fineract-db-users) ----------"
