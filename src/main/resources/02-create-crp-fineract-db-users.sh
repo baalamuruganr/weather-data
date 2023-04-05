@@ -58,6 +58,8 @@ check_and_grant_write_privilege() {
   for user in $(echo "$FINERACT_DATABASE_WRITE_USERS" | tr ',' '\n')
   do
     grant_privilege $user "pg_write_all_data"
+    grant_privilege $user "pg_stat_scan_tables"
+    grant_privilege $user "pg_database_owner"
   done
 }
 
