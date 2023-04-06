@@ -54,30 +54,24 @@ grant_role() {
   psql -h $POSTGRES_HOSTNAME -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" -c "GRANT $role TO $username;"
 }
 
-grant_all_privileges() {
-  local database_name="$1"
-  local database_user="$2"
-  echo "Granting all privileges on $database_name to $database_user."
-  export PGPASSWORD=$POSTGRES_PASSWORD;
-  psql -h $POSTGRES_HOSTNAME -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" -c "GRANT ALL PRIVILEGES ON DATABASE $database_name TO $database_user;"
-  echo "Privileges granted on $database_name to $database_user. \n"
-}
-
-get_write_users_and_grant_all_privileges() {
+grant_write_roles() {
   for user in $(echo "$FINERACT_DATABASE_WRITE_USERS" | tr ',' '\n')
   do
-    fineractDBs=$(echo "$FINERACT_DATABASES" | tr ',' '\n')
-    for dbName in $fineractDBs
-    do
-      grant_all_privileges $dbName $user
-    done
-      grant_all_privileges $CRP_DATABASE $user
+      grant_role $user "pg_write_all_data"
+  done
+}
+
+grant_admin_privileges() {
+  for user in $(echo "$FINERACT_DATABASE_ADMIN_USERS" | tr ',' '\n')
+  do
+      export PGPASSWORD=$POSTGRES_PASSWORD;
+      psql -h $POSTGRES_HOSTNAME -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" -c "ALTER USER $username WITH SUPERUSER;"
   done
 }
 
 #Create DB users
 check_and_create_userroles
-#Grant write access to specific DB users
-get_write_users_and_grant_all_privileges
+grant_write_roles
+grant_admin_privileges
 
 echo "----------Database Setup Complete (02-create-crp-fineract-db-users) ----------"
