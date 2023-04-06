@@ -52,6 +52,7 @@ grant_role() {
   echo "Granting $role role to $username."
   export PGPASSWORD=$POSTGRES_PASSWORD;
   psql -h $POSTGRES_HOSTNAME -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" -c "GRANT $role TO $username;"
+  echo "Granted $role role to $username."
 }
 
 grant_write_roles() {
@@ -64,8 +65,10 @@ grant_write_roles() {
 grant_admin_privileges() {
   for user in $(echo "$FINERACT_DATABASE_ADMIN_USERS" | tr ',' '\n')
   do
+      echo "Granting superuser to $user"
       export PGPASSWORD=$POSTGRES_PASSWORD;
       psql -h $POSTGRES_HOSTNAME -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" -c "ALTER USER $user WITH SUPERUSER;"
+      echo "Granted superuser to $user"
   done
 }
 
