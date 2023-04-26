@@ -68,6 +68,8 @@ grant_admin_privileges() {
       grant_role $user "pg_write_all_data"
       grant_role $user "pg_monitor"
       grant_role $user "pg_signal_backend"
+      # this is an aurora rds only role, an error will be thrown when running locally
+      grant_role $user "rds_superuser"
   done
 }
 
