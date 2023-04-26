@@ -23,7 +23,9 @@ How to Run:
 
 Start database
 ```
-docker run -itd -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=password postgres:14.6
+docker run --name postgres_db -itd -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=password postgres:14.6
+# Emulate rds_superuser role
+docker exec -it postgres_db psql -U root -c 'create role rds_superuser with SUPERUSER'
 ```
 
 Execute database init docker image
