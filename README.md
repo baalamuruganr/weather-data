@@ -23,10 +23,13 @@ How to Run:
 
 Start database
 ```
-docker run -itd -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=password postgres:14.6
+docker run --name postgres_db -itd -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=password postgres:14.6
+# Emulate rds_superuser role
+docker exec postgres_db psql -U root -c 'create role rds_superuser with SUPERUSER'
 ```
 
 Execute database init docker image
+For locally built images replace latest-develop with the generated build from mvn clean install -Pdocker
 ```
 docker run --net=host -e POSTGRES_HOSTNAME=127.0.0.1 artifactory.us-central1.gcp.dev.paypalinc.com/crp-fineract/crp-fineract-database-init:latest-develop
 ```
