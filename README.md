@@ -13,7 +13,7 @@ A docker image is produced via the io-fabric8 maven plugin.
 
 This docker image will expect a root user and a base postgres database be already created on startup. 
 Once run, it will create databases crpfnrct_db, fineract_default, fineract_tenant & fineract_de databases along with the necessary users in [Credit-R/crp-fineract-database-init](https://github.paypal.com/Credit-R/crp-fineract-database/tree/develop/src/main/resources).
-Once the databases & users are created, it will also proceed to create 2 schemas for adapter & config project under crpfnrct_db.
+Once the databases & users are created, it will also proceed to create 3 schemas for adapter, config project, and daemon under crpfnrct_db.
 
 The admin user will be root with a password=password
 

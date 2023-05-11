@@ -31,6 +31,13 @@ ENV CONF_APP_USER crpfnrctconfapp
 ENV CONF_APP_PASS crpfnrctconfapp
 ENV CRP_CONF_SCHEMA crpfnrctconf
 
+#CRP Daemon details
+ENV DAEMON_USER crpfnrctdaemon
+ENV DAEMON_PASS crpfnrctdaemon
+ENV DAEMON_APP_USER crpfnrctdaemonapp
+ENV DAEMON_APP_PASS crpfnrctdaemonapp
+ENV CRP_DAEMON_SCHEMA crpfnrctdaemon
+
 # Database Users
 ENV FINERACT_DATABASE_USERS first,another,firstadmin
 ENV FINERACT_DATABASE_WRITE_USERS another
