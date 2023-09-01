@@ -14,7 +14,7 @@ ENV FINERACT_DB_USER postgres
 ENV FINERACT_DB_PASS password
 ENV FINERACT_DATABASES fineract_tenants,fineract_default,fineract_de
 
-ENV MULTI_TENANT_SETUP true
+ENV MULTI_TENANT_SETUP false
 ENV ADDITIONAL_FINERACT_TENANTS fineract_us
 
 # CRP Database details
