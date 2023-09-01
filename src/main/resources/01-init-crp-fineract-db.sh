@@ -58,7 +58,7 @@ create_schema() {
 create_multi_tenant_db() {
   local multi_tenant_setup="$1"
   local additional_fineract_tenants="$2"
-  if [ "$multi_tenant_setup" = true]; then
+  if [ "$multi_tenant_setup" = true ]; then
     #Create additional fineract tenant DBs and assign privileges to user
     echo "----------Begin Multi Tenant Setup---------- \n"
     fineractTenantsToCreate=$(echo "$additional_fineract_tenants" | tr ',' '\n')
