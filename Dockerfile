@@ -34,7 +34,23 @@ ENV CONF_APP_USER crpfnrctconfapp
 ENV CONF_APP_PASS crpfnrctconfapp
 ENV CRP_CONF_SCHEMA crpfnrctconf
 
-COPY src/main/resources/01-init-crp-fineract-db.sh /
-RUN chmod +x /01-init-crp-fineract-db.sh
+#CRP Daemon details
+ENV DAEMON_USER crpfnrctdaemon
+ENV DAEMON_PASS crpfnrctdaemon
+ENV DAEMON_APP_USER crpfnrctdaemonapp
+ENV DAEMON_APP_PASS crpfnrctdaemonapp
+ENV CRP_DAEMON_SCHEMA crpfnrctdaemon
 
-ENTRYPOINT ["/bin/sh", "/01-init-crp-fineract-db.sh"]
+# Database Users
+ENV FINERACT_DATABASE_USERS first,another,firstadmin
+ENV FINERACT_DATABASE_WRITE_USERS another
+ENV FINERACT_DATABASE_ADMIN_USERS firstadmin
+ENV FINERACT_DATABASE_USER_FIRSTADMIN_PASSWORD firstadmin_pass
+ENV FINERACT_DATABASE_USER_FIRST_PASSWORD first_pass
+ENV FINERACT_DATABASE_USER_ANOTHER_PASSWORD another_pass
+
+COPY src/main/resources/*.sh /scripts/
+RUN chmod +x /scripts/*.sh
+
+# TODO Update the entrypoint/command to run all the scripts in directory in order
+ENTRYPOINT ["/bin/sh", "-c", "/scripts/01-init-crp-fineract-db.sh && /scripts/02-create-crp-fineract-db-users.sh"]
