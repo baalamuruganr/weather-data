@@ -5,12 +5,12 @@
     <parent>
         <groupId>com.paypal.credit.credit-build-resources</groupId>
         <artifactId>credit-build-resources-maven3-jdk17</artifactId>
-        <version>1.0.5</version>
+        <version>1.0.11</version>
     </parent>
 
     <groupId>com.paypal.credit</groupId>
     <artifactId>crp-fineract-database-init</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>crp-fineract-database-init</name>
 
