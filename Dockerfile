@@ -12,8 +12,9 @@ ENV POSTGRES_PASSWORD password
 # Fineract Database details
 ENV FINERACT_DB_USER postgres
 ENV FINERACT_DB_PASS password
-ENV FINERACT_DATABASES fineract_tenants,fineract_default,fineract_de
+ENV FINERACT_TENANT_STORE_DB fineract_tenants
 
+ENV PRIMARY_FINERACT_TENANT fineract_de
 ENV MULTI_TENANT_SETUP false
 ENV ADDITIONAL_FINERACT_TENANTS fineract_us
 

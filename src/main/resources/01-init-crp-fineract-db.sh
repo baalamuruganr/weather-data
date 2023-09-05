@@ -78,14 +78,15 @@ echo "----------Begin Fineract Database Setup---------- \n"
 #Create User for Fineract DB
 check_and_create_userrole "$FINERACT_DB_USER" "$FINERACT_DB_PASS"
 
-#Create all fineract DBs and assign privileges to user
-fineractDBsToCreate=$(echo "$FINERACT_DATABASES" | tr ',' '\n')
-for dbName in $fineractDBsToCreate
-do
-  check_and_create_database "$dbName"
-  assign_all_privileges "$dbName" "$FINERACT_DB_USER"
-done
+#Create Fineract tenant store DB
+check_and_create_database "$FINERACT_TENANT_STORE_DB"
+assign_all_privileges "$FINERACT_TENANT_STORE_DB" "$FINERACT_DB_USER"
 
+#Create the primary tenant DB
+check_and_create_database "$PRIMARY_FINERACT_TENANT"
+assign_all_privileges "$PRIMARY_FINERACT_TENANT" "$FINERACT_DB_USER"
+
+#Create additional tenants DB if multi-tenant setup is enabled
 create_multi_tenant_db "$MULTI_TENANT_SETUP" "$ADDITIONAL_FINERACT_TENANTS"
 
 echo "----------Fineract Database Setup Complete---------- \n"
