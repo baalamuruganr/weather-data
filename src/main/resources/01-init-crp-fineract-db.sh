@@ -82,9 +82,9 @@ check_and_create_userrole "$FINERACT_DB_USER" "$FINERACT_DB_PASS"
 check_and_create_database "$FINERACT_TENANT_STORE_DB"
 assign_all_privileges "$FINERACT_TENANT_STORE_DB" "$FINERACT_DB_USER"
 
-#Create the primary tenant DB
-check_and_create_database "$PRIMARY_FINERACT_TENANT"
-assign_all_privileges "$PRIMARY_FINERACT_TENANT" "$FINERACT_DB_USER"
+#Create the default tenant DB
+check_and_create_database "$DEFAULT_FINERACT_TENANT"
+assign_all_privileges "$DEFAULT_FINERACT_TENANT" "$FINERACT_DB_USER"
 
 #Create additional tenants DB if multi-tenant setup is enabled
 create_multi_tenant_db "$MULTI_TENANT_SETUP" "$ADDITIONAL_FINERACT_TENANTS"
