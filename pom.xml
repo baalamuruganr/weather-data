@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.paypal.credit.credit-build-resources</groupId>
         <artifactId>credit-build-resources-maven3-jdk17</artifactId>
-        <version>1.0.5</version>
+        <version>1.0.11</version>
     </parent>
 
     <groupId>com.paypal.credit</groupId>
