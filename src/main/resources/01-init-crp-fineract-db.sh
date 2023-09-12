@@ -4,7 +4,7 @@ set -e
 
 echo "----------Begin Database Setup---------- \n"
 echo "FineractDB = $FINERACT_DATABASES, AdapterDB = $CRP_DATABASE, Hostname = $POSTGRES_HOSTNAME, PostgresUser = $POSTGRES_USER, PostgresDB = $POSTGRES_DB,
-      FineractDBUser = $FINERACT_DB_USER, CRPUsers=[$ADAPTER_USER,$ADAPTER_APP_USER,$CONF_USER,$CONF_APP_USER], CRPSchemas=$CRP_SCHEMAS  \n"
+      FineractDBUser = $FINERACT_DB_USER, CRPUsers=[$ADAPTER_USER,$ADAPTER_APP_USER,$CONF_USER,$CONF_APP_USER,$DAEMON_USER,$DAEMON_APP_USER], CRPSchemas=$CRP_SCHEMAS  \n"
 
 check_and_create_userrole() {
   local username="$1"
@@ -74,17 +74,21 @@ echo "----------Begin CRP Database Setup---------- \n"
 #Create CRP DB & User
 check_and_create_database "$CRP_DATABASE"
 
-#Create Adapter & Conf users
+#Create Adapter, Conf, and Daemon users
 check_and_create_userrole "$ADAPTER_USER" "$ADAPTER_PASS"
 check_and_create_userrole "$ADAPTER_APP_USER" "$ADAPTER_APP_PASS"
 check_and_create_userrole "$CONF_USER" "$CONF_PASS"
 check_and_create_userrole "$CONF_APP_USER" "$CONF_APP_PASS"
+check_and_create_userrole "$DAEMON_USER" "$DAEMON_PASS"
+check_and_create_userrole "$DAEMON_APP_USER" "$DAEMON_APP_PASS"
 assign_all_privileges "$CRP_DATABASE" "$ADAPTER_USER"
 assign_all_privileges "$CRP_DATABASE" "$CONF_USER"
+assign_all_privileges "$CRP_DATABASE" "$DAEMON_USER"
 
-#Create Schemas for Adapter & Conf
+#Create Schemas for Adapter, Conf, and Daemon
 create_schema "$CRP_DATABASE" "$ADAPTER_USER" "$ADAPTER_PASS" "$CRP_ADAPTER_SCHEMA" "$ADAPTER_USER"
 create_schema "$CRP_DATABASE" "$CONF_USER" "$CONF_PASS" "$CRP_CONF_SCHEMA" "$CONF_USER"
+create_schema "$CRP_DATABASE" "$DAEMON_USER" "$DAEMON_PASS" "$CRP_DAEMON_SCHEMA" "$DAEMON_USER"
 
 echo "----------CRP Database Setup Complete---------- \n"
 
