@@ -28,30 +28,21 @@
         <docker.repository>${project.artifactId}</docker.repository>
         <git.connection>scm:git:git@github.paypal.com:Credit-R/crp-fineract-database-init.git</git.connection>
         <git.url>scm:git:git@github.paypal.com:Credit-R/crp-fineract-database-init.git</git.url>
-        <docker.base.image>ubuntu:20.04</docker.base.image>
+
+        <!-- Sonar properties -->
+        <!-- Ignores line limit rule of 120 chars, since checkstyle rule is 200 chars -->
+        <sonar.issue.ignore.multicriteria>e1</sonar.issue.ignore.multicriteria>
+        <sonar.issue.ignore.multicriteria.e1.ruleKey>java:S103</sonar.issue.ignore.multicriteria.e1.ruleKey>
+        <sonar.issue.ignore.multicriteria.e1.resourceKey>**/*.java</sonar.issue.ignore.multicriteria.e1.resourceKey>
     </properties>
 
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>io.fabric8</groupId>
-                    <artifactId>docker-maven-plugin</artifactId>
-                    <version>${maven.docker.plugin.version}</version>
-                    <configuration>
-                        <images>
-                            <image>
-                                <build>
-                                    <args>
-                                        <BASE_IMAGE>${docker.base.image}</BASE_IMAGE>
-                                    </args>
-                                </build>
-                            </image>
-                        </images>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>com.github.ekryd.sortpom</groupId>
+                <artifactId>sortpom-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
     </build>
 
     <profiles>
