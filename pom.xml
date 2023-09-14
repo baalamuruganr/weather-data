@@ -28,6 +28,7 @@
         <docker.repository>${project.artifactId}</docker.repository>
         <git.connection>scm:git:git@github.paypal.com:Credit-R/crp-fineract-database-init.git</git.connection>
         <git.url>scm:git:git@github.paypal.com:Credit-R/crp-fineract-database-init.git</git.url>
+        <docker.base.image>ubuntu:20.04</docker.base.image>
 
         <!-- Sonar properties -->
         <!-- Ignores line limit rule of 120 chars, since checkstyle rule is 200 chars -->
@@ -39,8 +40,57 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>com.github.ekryd.sortpom</groupId>
-                <artifactId>sortpom-maven-plugin</artifactId>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>${maven.docker.plugin.version}</version>
+                <configuration>
+                    <verbose>${docker.verbose}</verbose>
+                    <images>
+                        <image>
+                            <alias>service</alias>
+                            <name>${docker.registry.url}/${docker.project}/${docker.repository}:${docker.tag}</name>
+                            <build>
+                                <tags>
+                                    <tag>${docker.additional.tag}</tag>
+                                </tags>
+                                <buildx>
+                                    <platforms>
+                                        <platform>linux/amd64</platform>
+                                        <platform>linux/arm64</platform>
+                                    </platforms>
+                                    <configFile>${docker.config.file}</configFile>
+                                    <attestations>
+                                        <provenance>false</provenance>
+                                    </attestations>
+                                </buildx>
+                                <contextDir>${docker.context.directory}</contextDir>
+                                <args>
+                                    <BASE_IMAGE>${docker.base.image}</BASE_IMAGE>
+                                    <IS_CI>${docker.ci}</IS_CI>
+                                    <DOCKER_REGISTRY_URL>${docker.registry.url}</DOCKER_REGISTRY_URL>
+                                    <JRE_IMAGE_TAG>${docker.jre.image.tag}</JRE_IMAGE_TAG>
+                                    <FLYWAY_IMAGE_TAG>${docker.flyway.image.tag}</FLYWAY_IMAGE_TAG>
+                                </args>
+                            </build>
+                        </image>
+                    </images>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>docker-build</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>docker-push</id>
+                        <goals>
+                            <goal>push</goal>
+                        </goals>
+                        <phase>deploy</phase>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
