@@ -29,12 +29,6 @@
         <git.connection>scm:git:git@github.paypal.com:Credit-R/crp-fineract-database-init.git</git.connection>
         <git.url>scm:git:git@github.paypal.com:Credit-R/crp-fineract-database-init.git</git.url>
         <docker.base.image>ubuntu:20.04</docker.base.image>
-
-        <!-- Sonar properties -->
-        <!-- Ignores line limit rule of 120 chars, since checkstyle rule is 200 chars -->
-        <sonar.issue.ignore.multicriteria>e1</sonar.issue.ignore.multicriteria>
-        <sonar.issue.ignore.multicriteria.e1.ruleKey>java:S103</sonar.issue.ignore.multicriteria.e1.ruleKey>
-        <sonar.issue.ignore.multicriteria.e1.resourceKey>**/*.java</sonar.issue.ignore.multicriteria.e1.resourceKey>
     </properties>
 
     <build>
