@@ -1,3 +1,7 @@
+#!/bin/bash
+
+echo "----------Begin Database Setup (03-create-pg-extensions) ----------"
+
 # Create DB extensions.
 create_extension() {
   local database_name="$1"
@@ -28,12 +32,12 @@ create_extension() {
     echo "Extension $extension_name created."
   fi
 
-  echo "Created extension $extension_name in database $database_name with schema $schema_name. \n"
+  echo "Created extension $extension_name in database $database_name with schema $schema_name."
 }
 
 
 # Install the extensions
-echo "----------Begin PG extension install---------- \n"
+echo "----------Begin PG extension install----------"
 
 create_extension $DEFAULT_FINERACT_TENANT "$POSTGRES_USER" "$POSTGRES_PASSWORD" "pg_partman" "partman"
 create_extension "postgres" "$POSTGRES_USER" "$POSTGRES_PASSWORD" "pg_cron"
@@ -48,4 +52,4 @@ for tenantDbName in $ADDITIONAL_FINERACT_TENANTS
     create_extension $tenantDbName "$POSTGRES_USER" "$POSTGRES_PASSWORD" "pg_hint_plan"
   done
 
-echo "----------PG extension install Complete---------- \n"
+echo "----------PG extension install Complete----------"
