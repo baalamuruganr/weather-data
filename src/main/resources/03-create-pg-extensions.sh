@@ -29,22 +29,27 @@ create_extension() {
     else
       psql -h $POSTGRES_HOSTNAME -v ON_ERROR_STOP=1 --username "$database_user" --dbname "$database_name" -c "CREATE EXTENSION $extension_name WITH SCHEMA $schema_name;"
     fi
-    echo "Extension $extension_name created."
+    echo "Created Extension $extension_name in database $database_name with schema $schema_name."
   fi
-
-  echo "Created extension $extension_name in database $database_name with schema $schema_name."
 }
 
 
 # Install the extensions
 echo "----------Begin PG extension install----------"
 
+# Default Fineract tenant
 create_extension $DEFAULT_FINERACT_TENANT "$POSTGRES_USER" "$POSTGRES_PASSWORD" "pg_partman" "partman"
 create_extension "postgres" "$POSTGRES_USER" "$POSTGRES_PASSWORD" "pg_cron"
 create_extension "template1" "$POSTGRES_USER" "$POSTGRES_PASSWORD" "apg_plan_mgmt"
 create_extension $DEFAULT_FINERACT_TENANT "$POSTGRES_USER" "$POSTGRES_PASSWORD" "apg_plan_mgmt"
 create_extension $DEFAULT_FINERACT_TENANT "$POSTGRES_USER" "$POSTGRES_PASSWORD" "pg_hint_plan"
 
+# crpfnrct_db database
+create_extension $CRP_DATABASE "$POSTGRES_USER" "$POSTGRES_PASSWORD" "pg_partman" "partman"
+create_extension $CRP_DATABASE "$POSTGRES_USER" "$POSTGRES_PASSWORD" "apg_plan_mgmt"
+create_extension $CRP_DATABASE "$POSTGRES_USER" "$POSTGRES_PASSWORD" "pg_hint_plan"
+
+# Additional fineract tenants
 for tenantDbName in $ADDITIONAL_FINERACT_TENANTS
   do
     create_extension $tenantDbName "$POSTGRES_USER" "$POSTGRES_PASSWORD" "pg_partman" "partman"
