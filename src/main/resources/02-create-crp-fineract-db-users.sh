@@ -69,7 +69,12 @@ grant_admin_privileges() {
       grant_role $user "pg_monitor"
       grant_role $user "pg_signal_backend"
       # this is an aurora rds only role, an error will be thrown if this role isn't present locally
-      grant_role $user "rds_superuser"
+
+      if [ ! -z $SUPER_USER_ROLE_NAME ]; then
+        grant_role $user $SUPER_USER_ROLE_NAME
+      else
+        echo "No Super User role Provided."
+      fi
   done
 }
 
