@@ -55,18 +55,39 @@ create_schema() {
   echo "Created schema $schema_name with authorization for $schema_user. \n"
 }
 
+create_multi_tenant_db() {
+  local multi_tenant_setup="$1"
+  local additional_fineract_tenants="$2"
+  if [ "$multi_tenant_setup" = true ]; then
+    #Create additional fineract tenant DBs and assign privileges to user
+    echo "----------Begin Multi Tenant Setup---------- \n"
+    fineractTenantsToCreate=$(echo "$additional_fineract_tenants" | tr ',' '\n')
+    for tenantDbName in $additional_fineract_tenants
+    do
+      check_and_create_database "$tenantDbName"
+      assign_all_privileges "$tenantDbName" "$FINERACT_DB_USER"
+    done
+    echo "----------Multi Tenant Setup Complete---------- \n"
+  else
+    echo "----------No Additional Tenants Setup---------- \n"
+  fi
+}
+
 echo "----------Begin Fineract Database Setup---------- \n"
 
 #Create User for Fineract DB
 check_and_create_userrole "$FINERACT_DB_USER" "$FINERACT_DB_PASS"
 
-#Create all fineract DBs and assign privileges to user
-fineractDBsToCreate=$(echo "$FINERACT_DATABASES" | tr ',' '\n')
-for dbName in $fineractDBsToCreate
-do
-  check_and_create_database "$dbName"
-  assign_all_privileges "$dbName" "$FINERACT_DB_USER"
-done
+#Create Fineract tenant store DB
+check_and_create_database "$FINERACT_TENANT_STORE_DB"
+assign_all_privileges "$FINERACT_TENANT_STORE_DB" "$FINERACT_DB_USER"
+
+#Create the default tenant DB
+check_and_create_database "$DEFAULT_FINERACT_TENANT"
+assign_all_privileges "$DEFAULT_FINERACT_TENANT" "$FINERACT_DB_USER"
+
+#Create additional tenants DB if multi-tenant setup is enabled
+create_multi_tenant_db "$MULTI_TENANT_SETUP" "$ADDITIONAL_FINERACT_TENANTS"
 
 echo "----------Fineract Database Setup Complete---------- \n"
 
