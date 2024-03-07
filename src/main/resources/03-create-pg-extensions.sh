@@ -50,7 +50,7 @@ create_extension $CRP_DATABASE "$POSTGRES_USER" "$POSTGRES_PASSWORD" "apg_plan_m
 create_extension $CRP_DATABASE "$POSTGRES_USER" "$POSTGRES_PASSWORD" "pg_hint_plan"
 
 # Additional fineract tenants
-for tenantDbName in $ADDITIONAL_FINERACT_TENANTS
+for tenantDbName in $(echo "$ADDITIONAL_FINERACT_TENANTS" | tr ',' '\n')
   do
     create_extension $tenantDbName "$POSTGRES_USER" "$POSTGRES_PASSWORD" "pg_partman" "partman"
     create_extension $tenantDbName "$POSTGRES_USER" "$POSTGRES_PASSWORD" "apg_plan_mgmt"
