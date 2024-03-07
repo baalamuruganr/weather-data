@@ -16,7 +16,7 @@ ENV FINERACT_TENANT_STORE_DB fineract_tenants
 
 ENV DEFAULT_FINERACT_TENANT fineract_de
 ENV MULTI_TENANT_SETUP false
-ENV ADDITIONAL_FINERACT_TENANTS fineract_uspi4
+ENV ADDITIONAL_FINERACT_TENANTS fineract_uspi4,fineract_aupi4
 
 # CRP Database details
 ENV CRP_DATABASE crpfnrct_db
