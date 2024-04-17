@@ -50,11 +50,15 @@ create_extension $CRP_DATABASE "$POSTGRES_USER" "$POSTGRES_PASSWORD" "apg_plan_m
 create_extension $CRP_DATABASE "$POSTGRES_USER" "$POSTGRES_PASSWORD" "pg_hint_plan"
 
 # Additional fineract tenants
-for tenantDbName in $ADDITIONAL_FINERACT_TENANTS
-  do
-    create_extension $tenantDbName "$POSTGRES_USER" "$POSTGRES_PASSWORD" "pg_partman" "partman"
-    create_extension $tenantDbName "$POSTGRES_USER" "$POSTGRES_PASSWORD" "apg_plan_mgmt"
-    create_extension $tenantDbName "$POSTGRES_USER" "$POSTGRES_PASSWORD" "pg_hint_plan"
-  done
-
+if [ "$MULTI_TENANT_SETUP" = true ]; then
+  echo "----------Creating extensions for additional tenants---------- \n"
+  for tenantDbName in $(echo "$ADDITIONAL_FINERACT_TENANTS" | tr ',' '\n')
+    do
+      create_extension $tenantDbName "$POSTGRES_USER" "$POSTGRES_PASSWORD" "pg_partman" "partman"
+      create_extension $tenantDbName "$POSTGRES_USER" "$POSTGRES_PASSWORD" "apg_plan_mgmt"
+      create_extension $tenantDbName "$POSTGRES_USER" "$POSTGRES_PASSWORD" "pg_hint_plan"
+    done
+else
+    echo "----------No extensions created for additional tenants---------- \n"
+fi
 echo "----------PG extension install Complete----------"

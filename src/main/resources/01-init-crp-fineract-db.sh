@@ -61,8 +61,7 @@ create_multi_tenant_db() {
   if [ "$multi_tenant_setup" = true ]; then
     #Create additional fineract tenant DBs and assign privileges to user
     echo "----------Begin Multi Tenant Setup---------- \n"
-    fineractTenantsToCreate=$(echo "$additional_fineract_tenants" | tr ',' '\n')
-    for tenantDbName in $additional_fineract_tenants
+    for tenantDbName in $(echo "$additional_fineract_tenants" | tr ',' '\n')
     do
       check_and_create_database "$tenantDbName"
       assign_all_privileges "$tenantDbName" "$FINERACT_DB_USER"
