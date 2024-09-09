@@ -54,4 +54,4 @@ COPY src/main/resources/*.sh /scripts/
 RUN chmod +x /scripts/*.sh
 
 # TODO Update the entrypoint/command to run all the scripts in directory in order
-ENTRYPOINT ["/bin/sh", "-c", "/scripts/01-init-crp-fineract-db.sh && /scripts/02-create-crp-fineract-db-users.sh && /scripts/03-create-pg-extensions.sh"]
+ENTRYPOINT ["/bin/sh", "-c", "/scripts/01-init-crp-fineract-db.sh && /scripts/02-create-crp-fineract-db-users.sh && /scripts/03-create-pg-extensions.sh && /scripts/04-create-pgcron-schedule.sh"]
