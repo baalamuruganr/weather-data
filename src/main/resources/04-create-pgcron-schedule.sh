@@ -27,10 +27,18 @@ create_analyze_schedule() {
   if [ "$schema_name" != "public" ]; then
     full_table_name="${schema_name}_${table_name}"
   fi
-  
+
   job_name="daily__${target_database_name}__analyze__${full_table_name}"
+
+  # Create the SQL to get the hour dynamically
+  sql_gethour="SELECT EXTRACT(HOUR FROM TO_CHAR('2024-09-12T20:05:00'::timestamp at time zone '$DEFAULT_TENANT_TIMEZONE', 'YYYY-MM-DDThh24:mi')::timestamp at time zone 'UTC') as day"
+
+  # Execute the SQL to get the hour
+  hour=$(execute_psql_command "$database_user" "$database_name" "$sql_gethour")
+
+  # Create the SQL commands for cron jobs
   sql_check="SELECT 1 from cron.job WHERE jobname = '${job_name}';"
-  sql_create="SELECT cron.schedule('${job_name}', '30 18 * * *', 'ANALYZE $schema_name.$table_name');"
+  sql_create="SELECT cron.schedule('${job_name}', '05 ${hour} * * *', 'ANALYZE $schema_name.$table_name');"
   sql_update="UPDATE cron.job SET database='${target_database_name}' WHERE jobid=(SELECT max(j.jobid) FROM cron.job AS j WHERE j.database='${database_name}' AND j.jobname='${job_name}');"
 
   echo "---"
