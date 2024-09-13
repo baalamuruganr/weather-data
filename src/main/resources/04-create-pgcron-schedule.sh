@@ -21,6 +21,7 @@ create_analyze_schedule() {
   local target_database_name="$3"
   local schema_name="$4"
   local table_name="$5"
+  local tenant_timezone="$6"
   
   local full_table_name="$table_name"
 
@@ -31,7 +32,7 @@ create_analyze_schedule() {
   job_name="daily__${target_database_name}__analyze__${full_table_name}"
 
   # Create the SQL to get the hour dynamically
-  sql_gethour="SELECT EXTRACT(HOUR FROM TO_CHAR('2024-09-12T20:05:00'::timestamp at time zone '$DEFAULT_TENANT_TIMEZONE', 'YYYY-MM-DDThh24:mi')::timestamp at time zone 'UTC') as day"
+  sql_gethour="SELECT EXTRACT(HOUR FROM TO_CHAR('2024-09-12T20:05:00'::timestamp at time zone '$tenant_timezone', 'YYYY-MM-DDThh24:mi')::timestamp at time zone 'UTC') as day"
 
   # Execute the SQL to get the hour
   hour=$(execute_psql_command "$database_user" "$database_name" "$sql_gethour")
@@ -77,14 +78,14 @@ create_analyze_schedule() {
 echo "----------Begin PGCron schedule creation----------"
 
 # Default Fineract tenant - Database must always be POSTGRES
-create_analyze_schedule postgres "$POSTGRES_USER" "$DEFAULT_FINERACT_TENANT" "public" "m_external_asset_owner_transfer"
+create_analyze_schedule postgres "$POSTGRES_USER" "$DEFAULT_FINERACT_TENANT" "public" "m_external_asset_owner_transfer" $DEFAULT_TENANT_TIMEZONE
 
 # Additional fineract tenants
 if [ "$MULTI_TENANT_SETUP" = true ]; then
   echo "----------Creating PGCron schedule for additional tenants---------- \n"
   for tenantDbName in $(echo "$ADDITIONAL_FINERACT_TENANTS" | tr ',' '\n')
     do
-      create_analyze_schedule postgres "$POSTGRES_USER" "$tenantDbName" "public" "m_external_asset_owner_transfer"
+      create_analyze_schedule postgres "$POSTGRES_USER" "$tenantDbName" "public" "m_external_asset_owner_transfer" $DEFAULT_TENANT_TIMEZONE
     done
 else
     echo "----------No PGCron schedules created for additional tenants---------- \n"
