@@ -78,14 +78,14 @@ create_analyze_schedule() {
 echo "----------Begin PGCron schedule creation----------"
 
 # Default Fineract tenant - Database must always be POSTGRES
-create_analyze_schedule postgres "$POSTGRES_USER" "$DEFAULT_FINERACT_TENANT" "public" "m_external_asset_owner_transfer" $DEFAULT_TENANT_TIMEZONE
+create_analyze_schedule postgres "$POSTGRES_USER" "$DEFAULT_FINERACT_TENANT" "public" "m_external_asset_owner_transfer" "$DEFAULT_TENANT_TIMEZONE"
 
 # Additional fineract tenants
 if [ "$MULTI_TENANT_SETUP" = true ]; then
   echo "----------Creating PGCron schedule for additional tenants---------- \n"
   for tenantDbName in $(echo "$ADDITIONAL_FINERACT_TENANTS" | tr ',' '\n')
     do
-      create_analyze_schedule postgres "$POSTGRES_USER" "$tenantDbName" "public" "m_external_asset_owner_transfer" $DEFAULT_TENANT_TIMEZONE
+      create_analyze_schedule postgres "$POSTGRES_USER" "$tenantDbName" "public" "m_external_asset_owner_transfer" "$DEFAULT_TENANT_TIMEZONE"
     done
 else
     echo "----------No PGCron schedules created for additional tenants---------- \n"
