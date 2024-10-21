@@ -1,6 +1,6 @@
 #!/bin/bash
 # Created database users. The usernames must be comma separated list set as environment variable FINERACT_DATABASE_USERS.
-# The passwords for all these users should be provided as environment variables, for example, FINERACT_DATABASE_USER_<username-in-upper-case>_PASSWORD.
+# The passwords for all these users can be provided as environment variables, for example, FINERACT_DATABASE_USER_<username-in-upper-case>_PASSWORD.
 # Users created by default will have read access, for write access the users should also be included in FINERACT_DATABASE_WRITE_USERS
 set -e
 
@@ -19,14 +19,19 @@ check_and_create_userroles() {
     local password=${!password_property}
 
     if [ -z $password ]; then
-      echo "Password not found for user $user"
-      exit 1;
+      echo "Password not found for user $user. User will be created without password but granted with rds_iam role."
+      check_and_create_userrole $user $password
+      # give users read privilege by default
+      # pg_read_all_data was added in postgres 14
+      grant_role $user "pg_read_all_data"
+      grant_role $user "rds_iam"
+    else
+      check_and_create_userrole $user $password
+      # give users read privilege by default
+      # pg_read_all_data was added in postgres 14
+      grant_role $user "pg_read_all_data"
     fi
-
-    check_and_create_userrole $user $password
-    # give users read privilege by default
-    # pg_read_all_data was added in postgres 14
-    grant_role $user "pg_read_all_data"
+   
   done
 
 }
@@ -39,10 +44,16 @@ check_and_create_userrole() {
     if [ "$user_created_flag" = 1 ]; then
         echo "Database Role $username already created. Skipping..."
     else
-      echo "Creating Role $username"
-      export PGPASSWORD=$POSTGRES_PASSWORD;
-      psql -h $POSTGRES_HOSTNAME -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" -c "CREATE USER $username WITH PASSWORD '$password';"
-      echo "Role $username created."
+      if [ -z $password ]; then
+        echo "Creating Role $username without password"
+        psql -h $POSTGRES_HOSTNAME -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" -c "CREATE USER $username;"
+        echo "Role $username created without password."
+      else
+        echo "Creating Role $username"
+        export PGPASSWORD=$POSTGRES_PASSWORD;
+        psql -h $POSTGRES_HOSTNAME -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" -c "CREATE USER $username WITH PASSWORD '$password';"
+        echo "Role $username created."
+      fi
     fi
 }
 
