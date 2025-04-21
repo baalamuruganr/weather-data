@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
- * The Application class
+ * The Application class.
  */
 @EnableConfigurationProperties
 @EnableScheduling
