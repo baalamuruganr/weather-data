@@ -2,69 +2,200 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>com.paypal.credit.credit-build-resources</groupId>
-        <artifactId>credit-build-resources-maven3-jdk17</artifactId>
-        <version>1.1.0</version>
-    </parent>
-
-    <groupId>com.paypal.credit</groupId>
-    <artifactId>crp-fineract-database-init</artifactId>
-    <version>1.7.0-SNAPSHOT</version>
+    <groupId>com.weather.data</groupId>
+    <artifactId>weatherdata</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>crp-fineract-database-init</name>
+    <name>weatherdata</name>
 
     <!-- Maven official document recommends scm to be above properties
     https://maven.apache.org/developers/conventions/code.html -->
-    <scm>
-        <connection>${git.connection}</connection>
-        <developerConnection>${git.connection}</developerConnection>
-        <url>${git.url}</url>
-        <tag>HEAD</tag>
-    </scm>
+<!--    <scm>-->
+<!--        <connection>${git.connection}</connection>-->
+<!--        <developerConnection>${git.connection}</developerConnection>-->
+<!--        <url>${git.url}</url>-->
+<!--        <tag>HEAD</tag>-->
+<!--    </scm>-->
+
+    <modules>
+        <module>weatherdataService</module>
+        <module>weatherdataFunctionalTests</module>
+    </modules>
 
     <properties>
-        <docker.project>crp-fineract</docker.project>
-        <docker.repository>${project.artifactId}</docker.repository>
-        <git.connection>scm:git:git@github.paypal.com:Credit-R/crp-fineract-database-init.git</git.connection>
-        <git.url>scm:git:git@github.paypal.com:Credit-R/crp-fineract-database-init.git</git.url>
+<!--        <docker.project>tweet-timeline</docker.project>-->
+<!--        <docker.repository>${project.artifactId}</docker.repository>-->
+<!--        <git.connection>scm:git:git@github.com:baalamuruganr/tweet-timeline.git</git.connection>-->
+<!--        <git.url>scm:git:git@@github.com:baalamuruganr/tweet-timeline.git</git.url>-->
         <docker.base.image>ubuntu:20.04</docker.base.image>
+
+        <spring.version>5.3.39</spring.version>
+        <spring.data.version>2.7.18</spring.data.version>
+        <spring.boot.version>2.7.18</spring.boot.version>
+
+        <!-- Docker plugin -->
+        <maven.docker.plugin.version>0.43.0</maven.docker.plugin.version>
+
+        <!-- Java and maven versions must track with CPI managed Jenkins images -->
+        <version.jdk.range>[1.17.0-3,)</version.jdk.range>
+        <version.maven.minimum>3.6.1</version.maven.minimum>
+        <version.maven.range>[3.6.1,)</version.maven.range>
+        <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <slf4j.version>1.7.12</slf4j.version>
+        <mockito.version>4.3.0</mockito.version>
     </properties>
 
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>io.fabric8</groupId>
-                    <artifactId>docker-maven-plugin</artifactId>
-                    <version>${maven.docker.plugin.version}</version>
-                    <configuration>
-                        <images>
-                            <image>
-                                <build>
-                                    <args>
-                                        <BASE_IMAGE>${docker.base.image}</BASE_IMAGE>
-                                    </args>
-                                </build>
-                            </image>
-                        </images>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
+    <dependencies>
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>javax.persistence-api</artifactId>
+            <version>2.2</version>
+        </dependency>
 
-    <profiles>
-        <profile>
-            <id>docker</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>io.fabric8</groupId>
-                        <artifactId>docker-maven-plugin</artifactId>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+        <dependency>
+            <groupId>net.aksingh</groupId>
+            <artifactId>owm-japis</artifactId>
+            <version>2.5.3.0</version>
+        </dependency>
+
+        <!-- PostgreSQL Driver -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.2.24</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>5.6.3.Final</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>32.1.2-jre</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+
+        <!-- Spring dependencies -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${spring.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-jcl</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <version>${spring.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-jcl</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-jpa</artifactId>
+            <version>${spring.data.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-commons</artifactId>
+            <version>${spring.data.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot</artifactId>
+            <version>${spring.boot.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <version>${spring.boot.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>${spring.boot.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+            <version>${spring.boot.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.22</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Functional tests -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>2.7.18</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>7.10.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>5.1.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-configuration2</artifactId>
+            <version>2.11.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.10.1</version>
+        </dependency>
+
+    </dependencies>
+
 </project>

@@ -1,0 +1,7 @@
+CREATE TABLE weather_data (
+    id SERIAL PRIMARY KEY,
+    city VARCHAR(100),
+    temp_min DOUBLE PRECISION,
+    temp_max DOUBLE PRECISION,
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
