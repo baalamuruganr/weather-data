@@ -1,5 +1,3 @@
 target/
 .DS_Store
 .idea
-pom.xml.bak
-*.iml
