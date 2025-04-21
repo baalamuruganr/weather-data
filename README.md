@@ -1,4 +1,4 @@
-# tweet-timeline
+# weather-data
 This repository provides APIs to retrieve current and historical weather data using the OpenWeather API.
 
 ### Steps to build the project
