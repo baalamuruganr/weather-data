@@ -57,6 +57,7 @@ public class HistoricalWeatherTest extends BaseFunctionTest {
                 {String.format("historical-weather/%s?startDate=2025-01-01", cityName), expectedDailyResponse},
                 {String.format("historical-weather/%s?endDate=2025-01-02", cityName), expectedDailyResponse},
                 {String.format("historical-weather/%s?startDate=2025-01-01&endDate=2025-01-02", cityName), expectedDailyResponse},
+                {String.format("historical-weather/%s?startDate=2025-01-03&endDate=2025-01-03", cityName), "{}"}, // start and end date are same
                 {String.format("historical-weather/%s?startDate=2025-01-01&endDate=2025-01-02&interval=daily", cityName), expectedDailyResponse},
                 {String.format("historical-weather/%s?startDate=2025-01-01&interval=weekly", cityName), expectedWeeklyResponse},
                 {String.format("historical-weather/%s?endDate=2025-01-02&interval=monthly", cityName), expectedMonthlyResponse},

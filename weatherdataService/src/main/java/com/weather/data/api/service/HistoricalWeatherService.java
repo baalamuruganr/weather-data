@@ -40,8 +40,11 @@ public class HistoricalWeatherService {
     /**
      * Retrieve current weather condition of the given city.
      *
-     * @param cityName city name
-     * @return the current weather
+     * @param cityName  city name
+     * @param startDate start date
+     * @param endDate   end adte
+     * @param interval interval
+     * @return the historical weather
      */
     public Map<String, WeatherDataModel> retrieveHistoricalWeather(final String cityName, final LocalDate startDate,
                                                                    final LocalDate endDate, final String interval) {

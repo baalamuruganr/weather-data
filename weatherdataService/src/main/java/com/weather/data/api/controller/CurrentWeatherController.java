@@ -2,6 +2,7 @@ package com.weather.data.api.controller;
 
 import com.weather.data.api.service.CurrentWeatherService;
 import com.weather.data.model.WeatherDataModel;
+import lombok.extern.slf4j.Slf4j;
 import net.aksingh.owmjapis.api.APIException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
  */
 @Named
 @RequestMapping("/api/weather")
+@Slf4j
 public class CurrentWeatherController {
 
     /**
@@ -44,6 +46,7 @@ public class CurrentWeatherController {
     @GetMapping("/current-weather/{cityName}")
     public ResponseEntity<WeatherDataModel> retrieveCurrentWeather(final @PathVariable("cityName") String cityName) {
         try {
+            log.info("Retrieving current weather for city {}", cityName);
             return ResponseEntity.ok(currentWeatherService.retrieveCurrentWeather(cityName));
         } catch (APIException apiException) {
             throw new ResponseStatusException(HttpStatus.valueOf(apiException.getCode()), apiException.getMessage());

@@ -3,14 +3,15 @@ package com.weather.data.api.controller;
 import com.weather.data.api.service.HistoricalWeatherService;
 import com.weather.data.exception.BusinessException;
 import com.weather.data.validator.HistoricalWeatherValidator;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.time.LocalDate;
 
@@ -19,6 +20,7 @@ import java.time.LocalDate;
  */
 @Named
 @RequestMapping("/api/weather")
+@Slf4j
 public class HistoricalWeatherController {
 
     /**
@@ -58,23 +60,27 @@ public class HistoricalWeatherController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
             @RequestParam(defaultValue = "DAILY") String interval) {
 
-        // Set default dates
-        final LocalDate today = LocalDate.now();
-        if (endDate == null) {
-            endDate = today;
-        }
-        if (startDate == null) {
-            startDate = endDate.minusDays(1);
-        }
-
-        // Validate the input fields
         try {
-            historicalWeatherValidator.validate(startDate, endDate, interval);
-        } catch (final BusinessException businessException) {
-            return new ResponseEntity<>(businessException, HttpStatus.UNPROCESSABLE_ENTITY);
-        }
+            // Set default dates
+            final LocalDate today = LocalDate.now();
+            if (endDate == null) {
+                endDate = today;
+            }
+            if (startDate == null) {
+                startDate = endDate.minusDays(1);
+            }
 
-        // return the response
-        return ResponseEntity.ok(historicalWeatherService.retrieveHistoricalWeather(cityName, startDate, endDate, interval));
+            // Validate the input fields
+            historicalWeatherValidator.validate(startDate, endDate, interval);
+
+            // return the response
+            log.info("Retrieving historical weather for city {}", cityName);
+            return ResponseEntity.ok(historicalWeatherService.retrieveHistoricalWeather(cityName, startDate, endDate, interval));
+
+        } catch (final BusinessException businessException) {
+            return ResponseEntity.unprocessableEntity().body(businessException);
+        } catch (final Exception e) {
+            return ResponseEntity.internalServerError().body(e);
+        }
     }
 }

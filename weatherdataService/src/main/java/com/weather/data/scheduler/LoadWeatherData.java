@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
 import java.time.Instant;
 import java.util.Locale;
 
@@ -22,6 +21,12 @@ import static net.aksingh.owmjapis.core.OWM.Unit.IMPERIAL;
 @Service
 @Slf4j
 public class LoadWeatherData {
+
+    /**
+     * Open weather api key.
+     */
+    @Value("${current.weather.data.cities}")
+    private String cities;
 
     /**
      * Open weather api key.
@@ -47,9 +52,10 @@ public class LoadWeatherData {
     public void loadWeather() {
         final OWM owm = new OWM(apiKey);
         owm.setUnit(IMPERIAL);
-        saveCurrentWeather(owm, "Baltimore");
-        saveCurrentWeather(owm, "Washington");
-        saveCurrentWeather(owm, "Austin");
+
+        for (final String city : cities.split(",")) {
+            saveCurrentWeather(owm, city);
+        }
     }
 
     /**
